@@ -65,3 +65,8 @@ def get_stock():
         print("❌ Internal server error:")
         traceback.print_exc()
         return jsonify({'error': 'internal server error'}), 500
+
+
+if __name__ == '__main__':
+    port = int(os.environ.get('PORT', 5000))
+    app.run(host='0.0.0.0', port=port)
