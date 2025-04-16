@@ -31,8 +31,8 @@ def get_stock():
             return jsonify({'error': 'Ticker not found'}), 404
 
         # Convert filtered data
-        stock_prices = filtered_data[['Year', 'Price']].to_dict(orient='records')
-        esg_scores = filtered_data[['Year', 'ESG', 'Env', 'Soc', 'Gov']].to_dict(orient='records')
+        stock_prices = filtered_data[['Year', 'Price at beginning of year']].to_dict(orient='records')
+        esg_scores = filtered_data[['Year', 'ESG_Score', 'Enviornmental_Score', 'Governance_Score', 'Social_Score']].to_dict(orient='records')
 
         # Dummy predictions for now
         prediction = {
