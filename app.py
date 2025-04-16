@@ -48,7 +48,8 @@ def get_stock():
         })
 
     except Exception as e:
-        print(f"❌ Internal error: {e}")
+        print("❌ Internal server error:")
+        traceback.print_exc()  # <-- prints full error details
         return jsonify({'error': 'internal server error'}), 500
 
 if __name__ == '__main__':
