@@ -6,7 +6,7 @@ from flask_cors import CORS
 app = Flask(__name__)
 CORS(app)
 
-stock_esf_df = pd.read_csv('data/Bloomberg.csv')
+stock_esf_df = pd.read_csv('data/Bloomberg_cleaned.csv')
 
 @app.route('/api/stock')
 def get_stock():
