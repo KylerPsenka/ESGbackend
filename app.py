@@ -5,14 +5,13 @@ from flask_cors import CORS
 app = Flask(__name__)
 CORS(app)
 
-stock_df = pd.read_csv('data/stock_data.csv')
-esg_df = pd.read_csv('data/esg_scores.csv')
+stock_esg_df = pd.read_csv('data/Bloomberg(Sheet3).csv')
 
 @app.route('/api/stock')
 def get_stock():
     ticker = request.args.get('ticker')
-    stock_data = stock_df[stock_df['Ticker'] == ticker]
-    esg_data = esg_df[esg_df['Ticker'] == ticker]
+    stock_data = stock_esg_df[stock_esg_df['Ticker'] == ticker]
+    esg_data = stock_esg_df[stock_esg_df['Ticker'] == ticker]
 
     if stock_data.empty or esg_data.empty:
         return jsonify({'error': 'Ticker not found'}), 404
