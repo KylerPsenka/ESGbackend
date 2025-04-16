@@ -16,6 +16,7 @@ except Exception as e:
 
 @app.route('/api/stock')
 def get_stock():
+    import traceback  # make sure this is included
     ticker = request.args.get('ticker')
     print(f"📥 Received request for ticker: {ticker}")
 
@@ -41,17 +42,26 @@ def get_stock():
             '5_year': {'change': 0.50, 'confidence': 0.70}
         }
 
-        return jsonify({
+        # ✅ Fix: convert NaNs to None so jsonify() returns valid JSON
+        def clean_nans(obj):
+            if isinstance(obj, list):
+                return [clean_nans(i) for i in obj]
+            elif isinstance(obj, dict):
+                return {k: clean_nans(v) for k, v in obj.items()}
+            elif isinstance(obj, float) and pd.isna(obj):
+                return None
+            else:
+                return obj
+
+        result = {
             'stock_prices': stock_prices,
             'esg_scores': esg_scores,
             'prediction': prediction
-        })
+        }
+
+        return jsonify(clean_nans(result))
 
     except Exception as e:
         print("❌ Internal server error:")
-        traceback.print_exc()  # <-- prints full error details
+        traceback.print_exc()
         return jsonify({'error': 'internal server error'}), 500
-
-if __name__ == '__main__':
-    port = int(os.environ.get('PORT', 5000))
-    app.run(host='0.0.0.0', port=port)
