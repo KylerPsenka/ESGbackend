@@ -6,7 +6,6 @@ from flask_cors import CORS
 app = Flask(__name__)
 CORS(app)
 
-# Load CSV safely
 try:
     stock_esf_df = pd.read_csv('data/Bloomberg_cleaned.csv')
     print("✅ CSV loaded successfully.")
@@ -24,14 +23,12 @@ def get_stock():
         if stock_esf_df.empty:
             return jsonify({'error': 'CSV failed to load'}), 500
 
-        # Filter by ticker
         filtered_data = stock_esf_df[stock_esf_df['Ticker'] == ticker]
 
         if filtered_data.empty:
             print("⚠️ No data found for ticker.")
             return jsonify({'error': 'Ticker not found'}), 404
 
-        # Convert filtered data
         stock_prices = filtered_data[['Year', 'Price at beginning of year']].to_dict(orient='records')
         esg_scores = filtered_data[['Year', 'ESG_Score', 'Enviornmental_Score', 'Governance_Score', 'Social_Score']].to_dict(orient='records')
 
@@ -42,7 +39,6 @@ def get_stock():
             '5_year': {'change': 0.50, 'confidence': 0.70}
         }
 
-        # ✅ Fix: convert NaNs to None so jsonify() returns valid JSON
         def clean_nans(obj):
             if isinstance(obj, list):
                 return [clean_nans(i) for i in obj]
